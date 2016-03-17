@@ -14,8 +14,7 @@ Clustering of strings using Fuzzy String matching and KMeans Algorithm.
 > csv or tsv files can also be used. Use Pandas read_csv function. 
 
 #### Ex:
-   Here we have the *string_cluster.py* in **src** directory and a sample data *sample_data.json* in **data** directory.
-
-> `python string_clustering.py D:/FuzzyStringMatch/data/sample_data.json field04 25`
+   
+> `python string_clustering.py D:/FuzzyStringcomparision/data/sample_data.json field04 25`
 
 * This generates a output file named **Report.txt** with the strings from the JSON field *field04* clustured together into 25 different clusters.
