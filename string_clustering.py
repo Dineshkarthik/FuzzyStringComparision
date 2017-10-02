@@ -1,3 +1,4 @@
+"""Script for Clustering of strings using Fuzzy String matching & KMeans."""
 import sys
 import os.path
 import pandas as pd
@@ -9,10 +10,23 @@ from sklearn.cluster import KMeans
 filename = sys.argv[1]
 column = sys.argv[2]
 no_clusters = sys.argv[3]
+
+
 def clustering(X):
+    """Function to apply KMeans."""
     global df
     n = int(no_clusters)
-    km = KMeans(n_clusters= n, init='k-means++', n_init=10, max_iter=300, tol=0.0001, precompute_distances='auto', verbose=0, random_state=None, copy_x=True, n_jobs=1)
+    km = KMeans(
+        n_clusters=n,
+        init='k-means++',
+        n_init=10,
+        max_iter=300,
+        tol=0.0001,
+        precompute_distances='auto',
+        verbose=0,
+        random_state=None,
+        copy_x=True,
+        n_jobs=1)
     km.fit(X)
     data = df['data']
     preds = km.labels_
@@ -28,35 +42,44 @@ def clustering(X):
             myfile.write("Cluster#%d: %s \n" % (i, ", ".join(cmembers)))
         myfile.close()
 
+
 def normalise():
+    """Normalize the data using Fuzzy string."""
     global df
     if column in df.columns:
         exclude = set(string.punctuation)
+
         def compute_similarity(s1, s2):
-            return 1.0 - (0.01 * max(fuzz.ratio(s1, s2),fuzz.token_sort_ratio(s1, s2),fuzz.token_set_ratio(s1, s2)))
+            return 1.0 - (0.01 * max(
+                fuzz.ratio(s1, s2),
+                fuzz.token_sort_ratio(s1, s2), fuzz.token_set_ratio(s1, s2)))
+
         def handle_strings(x):
             x = x.upper()
             x = ''.join(ch for ch in x if ch not in exclude)
             return x
+
         df['data'] = df[column]
         df['data'] = df.data.apply(handle_strings)
         X = np.zeros((len(df.data), len(df.data)))
         for i in range(len(df.data)):
             for j in range(len(df.data)):
                 if X[i, j] == 0.0:
-                    X[i, j] = compute_similarity(df.data[i],df.data[j])
+                    X[i, j] = compute_similarity(df.data[i], df.data[j])
                 X[j, i] = X[i, j]
         clustering(X)
     else:
         print "Column doesn't exist"
 
+
 def main():
     if os.path.isfile(filename):
         global df
-        df=pd.read_json(filename)
+        df = pd.read_json(filename)
         normalise()
     else:
         print "File doesnot exist"
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
