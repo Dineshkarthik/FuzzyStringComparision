@@ -3,7 +3,6 @@ import sys
 import os.path
 import pandas as pd
 import numpy as np
-import json
 import string
 from fuzzywuzzy import fuzz
 from sklearn.cluster import KMeans
